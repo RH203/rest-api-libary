@@ -6,5 +6,5 @@ use App\Http\Controllers\BaseController;
 
 class StudentController extends BaseController
 {
-    //
+
 }
