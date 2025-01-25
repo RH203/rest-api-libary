@@ -14,6 +14,13 @@ class User extends Model
   protected $fillable = ['email', 'password', 'role', 'ban_status', 'deleted_at'];
   protected $hidden = ['password'];
 
+  protected $casts = [
+    'created_at' => 'datetime',
+    'updated_at' => 'datetime',
+    'deleted_at' => 'datetime',
+    'ban_status' => 'boolean',
+  ];
+
   public function studentProfile(): HasOne
   {
     return $this->hasOne(StudentProfile::class);
