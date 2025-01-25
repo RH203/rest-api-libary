@@ -41,7 +41,7 @@ class AuthController extends BaseController
       ]);
 
       return $this->success('Registrasi berhasil');
-    } catch (\Illuminate\Validation\ValidationException $e) {
+    } catch (ValidationException $e) {
       return $this->error('Data yang Anda masukkan tidak valid. Silakan periksa kembali.');
     } catch (\Exception $e) {
       return $this->error('Terjadi kesalahan, silakan coba lagi nanti: ' . $e->getMessage());
@@ -61,16 +61,17 @@ class AuthController extends BaseController
     try {
       $validate = $request->validate([
         'email' => 'required|string|email',
-        'password' => 'required|string'
+        'password' => 'required|string|min:8'
       ], [
         'email.required' => 'Email tidak boleh kosong',
         'email.email' => 'Email tidak valid',
-        'password.required' => 'Password tidak boleh kosong'
+        'password.required' => 'Password tidak boleh kosong',
+        'password.min' => 'Password harus memiliki minimal 8 karakter'
       ]);
 
       $data = User::where('email', $validate['email'])->first();
 
-      if ($data && Hash::check($validate['password'], $data->password)) {
+      if ($data && Hash::check($validate['password'], $data->password) && $data->ban_status == false && $data->deleted_at == null) {
 
         $data->tokens()->delete();
 
