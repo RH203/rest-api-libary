@@ -32,7 +32,7 @@ class StudentController extends BaseController
       $data = Peminjaman::where('book_id', $validate['book_id'])->where('student_id', $validate['student_id'])->first();
 
       if ($data) {
-        return $this->error('Buku sudah dipinjam', 400);
+        return $this->error('Satu id cuma bisa meminjam satu buku yang sama.', 400);
       }
 
       $book = Book::find($validate['book_id']);
@@ -110,5 +110,45 @@ class StudentController extends BaseController
   /**
    * Mengembalikan buku
    */
-  public function returnBook(Request $request) {}
+  public function returnBook(Request $request) {
+    try {
+      $validated = $request->validate([
+        'book_id' => 'required|numeric',
+        'student_id' => 'required|numeric'
+      ], [
+        'book_id.required' => 'ID buku tidak boleh kosong',
+        'book_id.numeric' => 'ID buku harus berupa angka',
+        'student_id.required' => 'ID siswa tidak boleh kosong',
+        'student_id.numeric' => 'ID siswa harus berupa angka'
+      ]);
+
+      $peminjaman = Peminjaman::where('book_id', $validated['book_id'])
+        ->where('student_id', $validated['student_id'])
+        ->whereNull('return_date')
+        ->first();
+
+        if(! $peminjaman) {
+          return $this->error('Peminjaman tidak ditemukan', 404);
+        }
+
+        $updateStock = Book::find($validated['book_id']);
+        if (!$updateStock) {
+            return $this->error('Buku tidak ditemukan', 404);
+        }
+
+        DB::transaction(function () use ($peminjaman, $validated, $updateStock) {
+          $updateStock->stock = $updateStock->stock + 1;
+
+          $peminjaman->return_date = now();
+
+          $updateStock->save();
+          $peminjaman->save();
+
+        });
+
+        return $this->success('Buku berhasil dikembalikan');
+    } catch (\Throwable $th) {
+      return $this->error('Failed return book', 500);
+    }
+  }
 }
