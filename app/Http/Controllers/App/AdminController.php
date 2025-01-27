@@ -125,7 +125,7 @@ class AdminController extends BaseController
       }
 
       $data = Publisher::all();
-      Cache::put('pub;isher', $data, 604800);
+      Cache::put('publisher', $data, 604800);
       return $this->success($data);
     } catch (\Throwable $th) {
       return $this->error('Failed to fetch publishers.');
@@ -276,8 +276,8 @@ class AdminController extends BaseController
       $user = User::find($validate['id']);
       $userProfie = $user->studentProfile()->first();
       if ($userProfie && $user) {
-        $user->deleted_at = now();
-        $userProfie->deleted_at = now();
+        $user->delete();
+        $userProfie->delete();
 
         $userProfie->save();
         $user->save();
