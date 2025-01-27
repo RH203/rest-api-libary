@@ -8,6 +8,16 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
 
 class StudentProfile extends Model
 {
+
+  protected $fillable = ['image', 'full_name', 'phone_number', 'address', 'gender',  'date_of_birth', 'user_id', 'ban_status'];
+
+  protected $casts = [
+    'date_of_birth' => 'date',
+    'ban_status' => 'boolean',
+    'created_at' => 'datetime',
+    'updated_at' => 'datetime',
+    'deleted_at' => 'datetime',
+  ];
   public function peminjaman(): HasMany
   {
     return $this->hasMany(Peminjaman::class);
