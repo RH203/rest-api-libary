@@ -1,66 +1,200 @@
-<p align="center"><a href="https://laravel.com" target="_blank"><img src="https://raw.githubusercontent.com/laravel/art/master/logo-lockup/5%20SVG/2%20CMYK/1%20Full%20Color/laravel-logolockup-cmyk-red.svg" width="400" alt="Laravel Logo"></a></p>
+# API Documentation - Library Management System
 
-<p align="center">
-<a href="https://github.com/laravel/framework/actions"><img src="https://github.com/laravel/framework/workflows/tests/badge.svg" alt="Build Status"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/dt/laravel/framework" alt="Total Downloads"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/v/laravel/framework" alt="Latest Stable Version"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/l/laravel/framework" alt="License"></a>
-</p>
+**Introduction**
 
-## About Laravel
+This is an API for managing a library system. The API includes functionality for managing books, genres, publishers, users, and borrowing transactions. The following are the features available in the system based on the controllers implemented.
 
-Laravel is a web application framework with expressive, elegant syntax. We believe development must be an enjoyable and creative experience to be truly fulfilling. Laravel takes the pain out of development by easing common tasks used in many web projects, such as:
+**Features**
 
-- [Simple, fast routing engine](https://laravel.com/docs/routing).
-- [Powerful dependency injection container](https://laravel.com/docs/container).
-- Multiple back-ends for [session](https://laravel.com/docs/session) and [cache](https://laravel.com/docs/cache) storage.
-- Expressive, intuitive [database ORM](https://laravel.com/docs/eloquent).
-- Database agnostic [schema migrations](https://laravel.com/docs/migrations).
-- [Robust background job processing](https://laravel.com/docs/queues).
-- [Real-time event broadcasting](https://laravel.com/docs/broadcasting).
+**1. AdminController**
 
-Laravel is accessible, powerful, and provides tools required for large, robust applications.
+The AdminController manages operations related to genres, publishers, users, and books. The following features are available:
 
-## Learning Laravel
+* **1.1 Get All Genres**
+    * Endpoint: `/api/admin/genre`
+    * Method: `GET`
+    * Description: Retrieves all genres stored in the system.
+    * Caching: Cached for 7 days.
+    * Response: A list of all genres.
 
-Laravel has the most extensive and thorough [documentation](https://laravel.com/docs) and video tutorial library of all modern web application frameworks, making it a breeze to get started with the framework.
+* **1.2 Create New Genre**
+    * Endpoint: `/api/admin/genre`
+    * Method: `POST`
+    * Description: Creates a new genre.
+    * Request Body:
+        ```json
+        {
+          "name": "string"
+        }
+        ```
+    * Response: Success or error message.
 
-You may also try the [Laravel Bootcamp](https://bootcamp.laravel.com), where you will be guided through building a modern Laravel application from scratch.
+* **1.3 Update Genre**
+    * Endpoint: `/api/admin/genre`
+    * Method: `PUT`
+    * Description: Updates an existing genre.
+    * Request Body:
+        ```json
+        {
+          "id": "numeric",
+          "name": "string"
+        }
+        ```
+    * Response: Success or error message.
 
-If you don't feel like reading, [Laracasts](https://laracasts.com) can help. Laracasts contains thousands of video tutorials on a range of topics including Laravel, modern PHP, unit testing, and JavaScript. Boost your skills by digging into our comprehensive video library.
+* **1.4 Delete Genre**
+    * Endpoint: `/api/admin/genre`
+    * Method: `DELETE`
+    * Description: Deletes an existing genre.
+    * Request Body:
+        ```json
+        {
+          "id": "numeric"
+        }
+        ```
+    * Response: Success or error message.
 
-## Laravel Sponsors
+* **1.5 Get All Publishers**
+    * Endpoint: `/api/admin/publisher`
+    * Method: `GET`
+    * Description: Retrieves all publishers stored in the system.
+    * Caching: Cached for 7 days.
+    * Response: A list of all publishers.
 
-We would like to extend our thanks to the following sponsors for funding Laravel development. If you are interested in becoming a sponsor, please visit the [Laravel Partners program](https://partners.laravel.com).
+* **1.6 Create New Publisher**
+    * Endpoint: `/api/admin/publisher`
+    * Method: `POST`
+    * Description: Creates a new publisher.
+    * Request Body:
+        ```json
+        {
+          "name": "string"
+        }
+        ```
+    * Response: Success or error message.
 
-### Premium Partners
+* **1.7 Update Publisher**
+    * Endpoint: `/api/admin/publisher`
+    * Method: `PUT`
+    * Description: Updates an existing publisher.
+    * Request Body:
+        ```json
+        {
+          "id": "numeric",
+          "name": "string"
+        }
+        ```
+    * Response: Success or error message.
 
-- **[Vehikl](https://vehikl.com/)**
-- **[Tighten Co.](https://tighten.co)**
-- **[WebReinvent](https://webreinvent.com/)**
-- **[Kirschbaum Development Group](https://kirschbaumdevelopment.com)**
-- **[64 Robots](https://64robots.com)**
-- **[Curotec](https://www.curotec.com/services/technologies/laravel/)**
-- **[Cyber-Duck](https://cyber-duck.co.uk)**
-- **[DevSquad](https://devsquad.com/hire-laravel-developers)**
-- **[Jump24](https://jump24.co.uk)**
-- **[Redberry](https://redberry.international/laravel/)**
-- **[Active Logic](https://activelogic.com)**
-- **[byte5](https://byte5.de)**
-- **[OP.GG](https://op.gg)**
+* **1.8 Delete Publisher**
+    * Endpoint: `/api/admin/publisher`
+    * Method: `DELETE`
+    * Description: Deletes an existing publisher.
+    * Request Body:
+        ```json
+        {
+          "id": "numeric"
+        }
+        ```
+    * Response: Success or error message.
 
-## Contributing
+* **1.9 List Users**
+    * Endpoint: `/api/admin/user`
+    * Method: `GET`
+    * Description: Retrieves all users stored in the system.
+    * Caching: Cached for 7 days.
+    * Response: A list of all users.
 
-Thank you for considering contributing to the Laravel framework! The contribution guide can be found in the [Laravel documentation](https://laravel.com/docs/contributions).
+* **1.10 Update User**
+    * Endpoint: `/api/admin/user`
+    * Method: `PUT`
+    * Description: Updates an existing user.
+    * Request Body:
+        ```json
+        {
+          "id": "numeric",
+          "email": "string",
+          "password": "string"
+        }
+        ```
+    * Response: Success or error message.
 
-## Code of Conduct
+* **1.11 Delete User**
+    * Endpoint: `/api/admin/user`
+    * Method: `DELETE`
+    * Description: Deletes an existing user.
+    * Request Body:
+        ```json
+        {
+          "id": "numeric"
+        }
+        ```
+    * Response: Success or error message.
 
-In order to ensure that the Laravel community is welcoming to all, please review and abide by the [Code of Conduct](https://laravel.com/docs/contributions#code-of-conduct).
+* **1.12 Ban User**
+    * Endpoint: `/api/admin/user/ban`
+    * Method: `POST`
+    * Description: Bans an existing user.
+    * Request Body:
+        ```json
+        {
+          "id": "numeric"
+        }
+        ```
+    * Response: Success or error message.
 
-## Security Vulnerabilities
+* **1.13 Update Book**
+    * Endpoint: `/api/admin/book`
+    * Method: `PUT`
+    * Description: Updates the details of an existing book.
+    * Request Body:
+        ```json
+        {
+          "id": "numeric",
+          "image": "file (jpeg/jpg/png)",
+          "title": "string",
+          "description": "string",
+          "author": "string",
+          "isbn": "string",
+          "stock": "numeric",
+          "publisher_id": "numeric",
+          "genre_id": "array"
+        }
+        ```
+    * Response: Success or error message.
 
-If you discover a security vulnerability within Laravel, please send an e-mail to Taylor Otwell via [taylor@laravel.com](mailto:taylor@laravel.com). All security vulnerabilities will be promptly addressed.
+* **1.14 Get Borrowing Transactions (Peminjaman)**
+    * Endpoint: `/api/admin/peminjaman`
+    * Method: `GET`
+    * Description: Retrieves a list of borrowing transactions.
+    * Response: A list of borrowing transactions with associated student profiles and book details.
 
-## License
+**2. AuthController**
 
-The Laravel framework is open-sourced software licensed under the [MIT license](https://opensource.org/licenses/MIT).
+The AuthController manages user authentication-related features, specifically user registration.
+
+* **2.1 User Registration**
+    * Endpoint: `/api/auth/register`
+    * Method: `POST`
+    * Description: Registers a new user.
+    * Request Body:
+        ```json
+        {
+          "email": "string",
+          "password": "string"
+        }
+        ```
+    * Response: Success or error message.
+
+* **2.2 User Login**
+    * Endpoint: `/api/auth/login`
+    * Method: `POST`
+    * Description: Registers a new user.
+    * Request Body:
+        ```json
+        {
+          "email": "string",
+          "password": "string"
+        }
+        ```
+    * Response: Success or error message.
