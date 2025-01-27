@@ -21,6 +21,7 @@ return new class extends Migration
       $table->enum('gender', [Gender::MALE->value, Gender::FEMALE->value])->nullable();
       $table->date('date_of_birth')->nullable();
       $table->foreignId('user_id')->constrained('users')->cascadeOnDelete();
+      $table->boolean('ban_status')->nullable()->default(false);
       $table->timestamps();
       $table->softDeletes();
     });

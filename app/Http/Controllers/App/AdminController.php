@@ -5,6 +5,7 @@ namespace App\Http\Controllers\App;
 use App\Http\Controllers\BaseController;
 use App\Models\Book;
 use App\Models\Genre;
+use App\Models\Peminjaman;
 use App\Models\Publisher;
 use App\Models\User;
 use Illuminate\Support\Facades\DB;
@@ -30,7 +31,7 @@ class AdminController extends BaseController
       Cache::put("genre", $data, 604800);
       return $this->success($data);
     } catch (\Exception $e) {
-      return $this->error($e->getMessage());
+      return $this->error('Something went wrong while fetching the genres.');
     }
   }
 
@@ -55,7 +56,7 @@ class AdminController extends BaseController
       Genre::create($validate);
       return $this->success('Genre created');
     } catch (\Exception $e) {
-      return $this->error($e->getMessage());
+      return $this->error('Failed to create genre.');
     }
   }
 
@@ -84,7 +85,7 @@ class AdminController extends BaseController
 
       return $this->error('Genre not found');
     } catch (\Throwable $th) {
-      return $this->error($th->getMessage());
+      return $this->error('Failed to update genre.');
     }
   }
 
@@ -109,7 +110,7 @@ class AdminController extends BaseController
 
       return $this->error('Genre not found');
     } catch (\Throwable $th) {
-      return $this->error($th->getMessage());
+      return $this->error('Failed to delete genre.');
     }
   }
 
@@ -124,10 +125,10 @@ class AdminController extends BaseController
       }
 
       $data = Publisher::all();
-      Cache::put('pub;isher', $data, 604800);
+      Cache::put('publisher', $data, 604800);
       return $this->success($data);
     } catch (\Throwable $th) {
-      return $this->error($th->getMessage());
+      return $this->error('Failed to fetch publishers.');
     }
   }
 
@@ -152,7 +153,7 @@ class AdminController extends BaseController
       Publisher::create($validate);
       return $this->success('Publisher created');
     } catch (\Exception $e) {
-      return $this->error($e->getMessage());
+      return $this->error('Failed to create publisher.');
     }
   }
 
@@ -181,7 +182,7 @@ class AdminController extends BaseController
 
       return $this->error('Publisher not found');
     } catch (\Throwable $th) {
-      return $this->error($th->getMessage());
+      return $this->error('Failed to update publisher.');
     }
   }
 
@@ -206,7 +207,7 @@ class AdminController extends BaseController
 
       return $this->error('Publisher not found');
     } catch (\Throwable $th) {
-      return $this->error($th->getMessage());
+      return $this->error('Failed to delete publisher.');
     }
   }
 
@@ -224,7 +225,7 @@ class AdminController extends BaseController
       Cache::put('user', $data, 604800);
       return $this->success($data);
     } catch (\Throwable $th) {
-      return $this->error($th->getMessage());
+      return $this->error('Failed to fetch users.');
     }
   }
 
@@ -258,7 +259,7 @@ class AdminController extends BaseController
       }
       return $this->error('User not found');
     } catch (\Throwable $th) {
-      return $this->error($th->getMessage());
+      return $this->error('Failed to update user.');
     }
   }
 
@@ -275,8 +276,8 @@ class AdminController extends BaseController
       $user = User::find($validate['id']);
       $userProfie = $user->studentProfile()->first();
       if ($userProfie && $user) {
-        $user->deleted_at = now();
-        $userProfie->deleted_at = now();
+        $user->delete();
+        $userProfie->delete();
 
         $userProfie->save();
         $user->save();
@@ -285,7 +286,33 @@ class AdminController extends BaseController
 
       return $this->error('User not found');
     } catch (\Throwable $th) {
-      return $this->error($th->getMessage());
+      return $this->error('Failed to delete user.');
+    }
+  }
+
+  /**
+   * Ban account user
+   */
+  public function banUser(Request $request)
+  {
+    try {
+      $validate = $request->validate([
+        'id' => 'required|numeric',
+      ], [
+        'id.required' => 'ID is required',
+        'id.numeric' => 'ID must be a number',
+      ]);
+
+      $user = User::findOrFail($validate['id']);
+      $userProfile = $user->studentProfile()->first();
+      $userProfile->deleted_at = now();
+      $user->ban_status = true;
+      $user->save();
+      $userProfile->save();
+
+      return $this->success('User ' . $userProfile->full_name . ' banned');
+    } catch (\Throwable $th) {
+      return $this->error('Failed to ban user.');
     }
   }
 
@@ -338,7 +365,7 @@ class AdminController extends BaseController
         $filename = Str::uuid()->toString() . '.' . $image->getClientOriginalExtension();
         $imagePath = $image->storeAs('public/images/books', $filename);
         $book->image = $imagePath;
-     }
+      }
 
       $book->title = $validate['title'];
       $book->description = $validate['description'];
@@ -356,7 +383,28 @@ class AdminController extends BaseController
 
       return $this->success('Book updated successfully');
     } catch (\Throwable $th) {
-      return $this->error('Error: ' . $th->getMessage());
+      return $this->error('Failed to update book.');
+    }
+  }
+
+  /**
+   * Melihat daftar peminjam
+   */
+  public function getPeminjaman()
+  {
+    try {
+      $peminjaman = Peminjaman::with([
+        'studentProfile.full_name',
+        'books' => [
+          'title',
+          'stock'
+        ]
+      ])->get();
+
+
+      return $this->success($peminjaman);
+    } catch (\Throwable $th) {
+      return $this->error('Failed to fetch list peminjam.');
     }
   }
 }

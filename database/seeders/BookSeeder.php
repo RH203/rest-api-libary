@@ -5,7 +5,6 @@ namespace Database\Seeders;
 use App\Models\Book;
 use App\Models\Publisher;
 use Illuminate\Database\Seeder;
-use Faker\Factory as Faker;
 use Illuminate\Support\Facades\DB;
 use App\Models\Genre;
 
@@ -24,11 +23,12 @@ class BookSeeder extends Seeder
 
     // Membuat data buku
     $data = [
+      'image' => fake()->imageUrl(),
       'title' => 'The Silent Observer',
-      'description' => Faker::create()->text(),
-      'author' => Faker::create()->name(),
-      'isbn' => Faker::create()->isbn13(),
-      'stock' => Faker::create()->randomDigit(),
+      'description' => fake()->sentence(),
+      'author' => fake()->name(),
+      'isbn' => fake()->isbn13(),
+      'stock' => fake()->randomDigit(),
       'publisher_id' => $publisher->id,
     ];
 
