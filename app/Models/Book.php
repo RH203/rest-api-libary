@@ -20,11 +20,11 @@ class Book extends Model
 
   public function peminjaman(): HasMany
   {
-    return $this->hasMany(Peminjaman::class);
+    return $this->hasMany(Peminjaman::class)->whereNull('return_date');
   }
 
   public function genre(): BelongsToMany
   {
-    return $this->belongsToMany(Genre::class);
+    return $this->belongsToMany(Genre::class, 'genre_book', 'book_id', 'genre_id');
   }
 }
