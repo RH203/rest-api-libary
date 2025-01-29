@@ -10,7 +10,6 @@ use App\Models\Publisher;
 use App\Models\User;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Str;
 
@@ -23,12 +22,8 @@ class AdminController extends BaseController
   public function getGenre()
   {
     try {
-      if (Cache::has("genre")) {
-        return $this->success(Cache::get("genre"));
-      }
 
-      $data = Genre::all();
-      Cache::put("genre", $data, 604800);
+      $data = Genre::where('deleted_at', null)->get();
       return $this->success($data);
     } catch (\Exception $e) {
       return $this->error('Something went wrong while fetching the genres.');
@@ -50,13 +45,13 @@ class AdminController extends BaseController
 
       $data = Genre::where('name', $validate['name'])->first();
       if ($data) {
-        return $this->error("Genre already exists");
+        throw new \ErrorException('Genre already exists');
       }
 
       Genre::create($validate);
       return $this->success('Genre created');
     } catch (\Exception $e) {
-      return $this->error('Failed to create genre.');
+      throw new \ErrorException('Genre already exists');
     }
   }
 
@@ -120,12 +115,9 @@ class AdminController extends BaseController
   public function getPublisher()
   {
     try {
-      if (Cache::has('publisher')) {
-        return $this->success(Cache::get('publisher'));
-      }
+    
 
       $data = Publisher::all();
-      Cache::put('publisher', $data, 604800);
       return $this->success($data);
     } catch (\Throwable $th) {
       return $this->error('Failed to fetch publishers.');
@@ -217,12 +209,9 @@ class AdminController extends BaseController
   public function getUser()
   {
     try {
-      if (Cache::has('user')) {
-        return $this->success(Cache::get('user'));
-      }
+    
 
       $data = User::all();
-      Cache::put('user', $data, 604800);
       return $this->success($data);
     } catch (\Throwable $th) {
       return $this->error('Failed to fetch users.');

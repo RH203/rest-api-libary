@@ -33,4 +33,10 @@ class BaseController extends Controller
       'message' => $message
     ], $statusCode);
   }
+
+  public function successPaginate($data = [], $statusCode = 200) {
+    return response()->json([
+      'results' => $data,
+    ]);
+  }
 }
