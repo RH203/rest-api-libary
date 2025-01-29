@@ -2,11 +2,12 @@
 
 use App\Http\Controllers\App\AdminController;
 use App\Http\Controllers\App\AuthController;
+use App\Http\Controllers\App\StudentController;
 use Illuminate\Support\Facades\Route;
 
 // Route untuk login dan registrasi
 Route::post('/login', [AuthController::class, 'login']); // Route untuk login
-Route::post('/register', [AuthController::class, 'register']); // Route untuk registrasi
+Route::post('/register', [AuthController::class, 'registrasi']); // Route untuk registrasi
 
 // Route dengan prefix 'admin' dan middleware 'auth:sanctum' & 'abilities:admin'
 Route::prefix('admin')->middleware(['auth:sanctum', 'abilities:admin'])->group(function () {
@@ -39,4 +40,13 @@ Route::prefix('admin')->middleware(['auth:sanctum', 'abilities:admin'])->group(f
   Route::prefix('book')->group(function () {
     Route::post('/update', [AdminController::class, 'updateBook']); // Update book details
   });
+});
+
+// === Routes untuk student ===
+Route::prefix('student')->middleware(['auth:sanctum', 'ability:user,admin'])->group(function () {
+  Route::get('/get-all-books', [StudentController::class, 'getBook']); // Get all books
+  Route::get('/detail-book', [StudentController::class, 'getDetailBook']); // Detail book by id
+  Route::post('/borrow-book', [StudentController::class, 'borrowBook']); // Borrow book
+  Route::post('/return-book', [StudentController::class, 'returnBook']); // Return book
+
 });
